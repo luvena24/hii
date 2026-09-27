@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday Ali! 🎂✨</title>
+  
+  <style>
+    /* ==========================================
+       1. STILISASI UMUM & TEMA PIXEL
+       ========================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: #090a0f;
+      color: #fff;
+      font-family: 'Courier New', Courier, monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient Canvas Background (Bintang & Ubur-Ubur) */
+    #canvas-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .card-pixel {
+      background: rgba(15, 23, 42, 0.88);
+      border: 3px solid #38bdf8;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4), inset 0 0 15px rgba(56, 189, 248, 0.2);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 20px 0;
+      width: 100%;
+      text-align: center;
+      backdrop-filter: blur(8px);
+      position: relative;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    h1, h2, h3 {
+      text-shadow: 2px 2px #000, 0 0 10px #38bdf8;
+      margin-bottom: 15px;
+      letter-spacing: 1px;
+    }
+
+    p {
+      line-height: 1.7;
+      font-size: 1rem;
+      color: #e2e8f0;
+      text-shadow: 1px 1px 2px #000;
+      margin-bottom: 15px;
+      text-align: justify;
+    }
+
+    .btn-pixel {
+      background: #38bdf8;
+      color: #0f172a;
+      border: 3px solid #fff;
+      padding: 12px 24px;
+      font-size: 1.05rem;
+      font-weight: bold;
+      font-family: inherit;
+      cursor: pointer;
+      border-radius: 8px;
+      box-shadow: 0 4px 0 #0284c7;
+      transition: all 0.1s ease;
+      margin-top: 15px;
+      display: inline-block;
+    }
+
+    .btn-pixel:active {
+      transform: translateY(4px);
+      box-shadow: 0 0 0 #0284c7;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Hiasan Pinggir Lucu */
+    .decor-side {
+      position: absolute;
+      font-size: 1.8rem;
+      animation: floatAnim 3s infinite ease-in-out alternate;
+      pointer-events: none;
+    }
+
+    .decor-tl { top: -15px; left: -15px; }
+    .decor-tr { top: -15px; right: -15px; }
+    .decor-bl { bottom: -15px; left: -15px; }
+    .decor-br { bottom: -15px; right: -15px; }
+
+    @keyframes floatAnim {
+      from { transform: translateY(0px) rotate(0deg); }
+      to { transform: translateY(-8px) rotate(5deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ==========================================
+       2. INTRO SCREEN
+       ========================================== */
+    #screen-intro {
+      cursor: pointer;
+      min-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .click-hint {
+      margin-top: 25px;
+      animation: pulse 1.5s infinite;
+      color: #38bdf8;
+      font-weight: bold;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; transform: scale(0.98); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+
+    /* ==========================================
+       3. MEMORY GAME PUZZLE
+       ========================================== */
+    .memory-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      max-width: 360px;
+      margin: 20px auto;
+    }
+
+    .memory-card {
+      aspect-ratio: 1;
+      background: #1e293b;
+      border: 2px solid #38bdf8;
+      border-radius: 8px;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .memory-card.flipped {
+      background: #0f172a;
+      border-color: #f43f5e;
+    }
+
+    /* ==========================================
+       4. ANIMASI BUNGA CSS
+       ========================================== */
+    .flower-wrapper {
+      position: relative;
+      width: 100%;
+      height: 250px;
+      background: radial-gradient(circle, #1e1b4b 0%, #090a0f 100%);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .flower-stem {
+      width: 8px;
+      height: 140px;
+      background: #22c55e;
+      position: absolute;
+      bottom: 0;
+      border-radius: 4px;
+      animation: growStem 1.8s ease-out forwards;
+    }
+
+    .flower-head {
+      position: absolute;
+      bottom: 130px;
+      width: 80px;
+      height: 80px;
+      animation: bloom 1.2s 1.5s ease-out forwards;
+      opacity: 0;
+      transform: scale(0);
+    }
+
+    .petal {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: #f43f5e;
+      border-radius: 50% 50% 0 50%;
+      box-shadow: 0 0 10px #fb7185;
+    }
+
+    .petal-1 { transform: rotate(0deg) translate(20px, 0); }
+    .petal-2 { transform: rotate(90deg) translate(20px, 0); }
+    .petal-3 { transform: rotate(180deg) translate(20px, 0); }
+    .petal-4 { transform: rotate(270deg) translate(20px, 0); }
+
+    .flower-center {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: #facc15;
+      border-radius: 50%;
+      top: 25px;
+      left: 25px;
+      box-shadow: 0 0 12px #fde047;
+    }
+
+    @keyframes growStem {
+      from { height: 0; }
+      to { height: 140px; }
+    }
+
+    @keyframes bloom {
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* ==========================================
+       5. INTERAKSI TIUP LILIN
+       ========================================== */
+    .cake-container {
+      position: relative;
+      margin: 30px auto 10px auto;
+      width: 150px;
+      height: 110px;
+    }
+
+    .cake-base {
+      position: absolute;
+      bottom: 0;
+      width: 150px;
+      height: 60px;
+      background: #f472b6;
+      border-radius: 12px 12px 4px 4px;
+      border: 3px solid #fff;
+    }
+
+    .cake-topping {
+      position: absolute;
+      bottom: 55px;
+      left: 10px;
+      width: 130px;
+      height: 25px;
+      background: #fbcfe8;
+      border-radius: 8px;
+    }
+
+    .candle {
+      position: absolute;
+      bottom: 80px;
+      left: 65px;
+      width: 18px;
+      height: 35px;
+      background: linear-gradient(to right, #38bdf8, #0284c7);
+      border-radius: 4px;
+    }
+
+    .flame {
+      position: absolute;
+      top: -18px;
+      left: 2px;
+      width: 14px;
+      height: 20px;
+      background: #f97316;
+      border-radius: 50% 50% 20% 20%;
+      box-shadow: 0 0 15px #f97316, 0 0 25px #facc15;
+      animation: flicker 0.2s infinite alternate;
+      cursor: pointer;
+    }
+
+    .flame.extinguished {
+      display: none;
+    }
+
+    .smoke {
+      position: absolute;
+      top: -25px;
+      left: 4px;
+      width: 8px;
+      height: 8px;
+      background: rgba(200, 200, 200, 0.6);
+      border-radius: 50%;
+      animation: rise 1.5s forwards;
+      display: none;
+    }
+
+    @keyframes flicker {
+      from { transform: scale(1) rotate(-2deg); }
+      to { transform: scale(1.1) rotate(2deg); }
+    }
+
+    @keyframes rise {
+      0% { opacity: 0.8; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-35px) scale(3); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Canvas Ambient (Bintang Jatuh & Ubur-ubur Glow) -->
+  <canvas id="canvas-bg"></canvas>
+
+  <div class="container">
+
+    <!-- SCREEN 1: INTRO (SENTUH LAYAR) -->
+    <div id="screen-intro" class="card-pixel">
+      <h2>✦ Special Day for Ali ✦</h2>
+      <p style="text-align: center; color: #94a3b8;">Sentuh atau klik layar di mana saja untuk menumbuhkan bunga ajaib...</p>
+      <div class="click-hint">✨ Klik / Sentuh Layar Terus ✨</div>
+      <button id="btn-to-game" class="btn-pixel hidden">Mulai Petualangan Game 🎮</button>
+    </div>
+
+    <!-- SCREEN 2: GAME MEMORY PUZZLE -->
+    <div id="screen-game" class="card-pixel hidden">
+      <div class="decor-side decor-tl">🐱</div>
+      <div class="decor-side decor-tr">🪼</div>
+      <h2>🧩 Memory Puzzle Ali</h2>
+      <p style="text-align: center;">Temukan semua pasangan kartu untuk membuka ucapan spesial dan perayaan ulang tahunmu!</p>
+      
+      <div class="memory-grid" id="memory-grid"></div>
+      <button id="btn-to-main" class="btn-pixel hidden">Buka Hadiah & Ucapan Utama 🎁</button>
+    </div>
+
+    <!-- SCREEN 3: BUNGA & UCAPAN UTAMA -->
+    <div id="screen-main" class="card-pixel hidden">
+      <div class="decor-side decor-tl">🐰</div>
+      <div class="decor-side decor-tr">🐱</div>
+      <div class="decor-side decor-bl">🌸</div>
+      <div class="decor-side decor-br">🐠</div>
+
+      <!-- Bunga Mekar CSS -->
+      <div class="flower-wrapper">
+        <div class="flower-stem"></div>
+        <div class="flower-head">
+          <div class="petal petal-1"></div>
+          <div class="petal petal-2"></div>
+          <div class="petal petal-3"></div>
+          <div class="petal petal-4"></div>
+          <div class="flower-center"></div>
+        </div>
+      </div>
+
+      <h1>🎉 Happy Birthday, Ali! 🎂</h1>
+      <p style="text-align: center; font-weight: bold; color: #38bdf8;">28 September</p>
+      <hr style="border-color: #38bdf8; margin: 15px 0;">
+
+      <!-- Ucapan Lengkap -->
+      <p>
+        Happy birthday ya. Sending you my warmest birthday wishes today and wishing you a very wonderful year ahead! Semoga di usia yang baru ini, kamu selalu dikelilingi kebaikan, kesehatan, ketenangan hati, serta dilimpahi banyak kebahagiaan dan keberkahan. Semoga segalanya berjalan lebih indah, membawa banyak senyuman baru, dan kamu selalu diberi kemudahan dalam setiap langkah hidupmu hingga semua harapan baikmu bisa terwujud satu per satu. Hope this new chapter treats you with so much kindness, enjoy your special day, and please take good care of yourself always!
+      </p>
+
+      <p>
+        Oiya, jangan lupa untuk selalu <i>take good care of your health and safety</i> ya. Kalau lagi di jalan atau berkendara, tolong selalu hati-hati, waspada, dan lihat-lihat situasi sekitar supaya perjalanan kamu selalu tenang, aman, dan terhindar dari hal-hal yang tidak diinginkan.
+      </p>
+      <p>
+        Jangan lupa untuk tetap jaga pola makan sehari-hari, jangan sering telat makan, perhatikan asupan air putih, dan usahakan tidur yang cukup. Jangan cuma kesehatan fisik, tapi <i>your mental health and peace of mind</i> juga penting banget—kalau lagi banyak pikiran atau capek, <i>take a break</i> sebentar dan jangan terlalu dipaksakan ya.
+      </p>
+      <p>
+        Kalau sewaktu-waktu tubuh mulai merasa kurang fit atau sakit, langsung minum obat dan luangkan waktu untuk <i>full rest</i> sampai benar-benar pulih kembali. Please stay safe, stay healthy, and take care of yourself properly because your well-being always matters the most.
+      </p>
+
+      <p>
+        Oiya, untuk kuliahnya juga tetap semangat ya. Semoga setiap proses belajar, tugas-tugas, dan ujian yang sedang atau akan kamu jalani selalu diberi kemudahan, kelancaran, serta membawa banyak ilmu dan pengalaman yang bermanfaat. Jangan lupa untuk menikmati setiap prosesnya, dan kalau sewaktu-waktu merasa lelah atau kewalahan, luangkan waktu untuk <i>take a break</i> sejenak—jangan terlalu menekan diri sendiri. Semoga semua perjuangan dan usaha keras kamu di kampus membuahkan hasil yang indah serta membanggakan. <i>I know you are doing your best, so stay confident, keep going, and good luck with all of your studies and future ahead!</i>
+      </p>
+
+      <p>
+        Satu hal lagi, untuk perjalanan hidup kamu ke depannya, semoga kamu selalu diberi ketenangan, kekuatan, dan keberanian ya. Hidup mungkin tidak selalu mudah dan kadang ada hari-hari yang melelahkan, tapi percayalah kamu selalu punya kemampuan untuk melewatinya. Apapun yang sedang kamu perjuangkan atau impikan saat ini, semoga selalu dipermudah dan perlahan menemukan jalan yang indah. Please be kind to yourself, nikmati setiap prosesnya, dan ingat untuk tidak membandingkan perjalananmu dengan orang lain karena setiap orang punya waktunya masing-masing. Saat situasi terasa berat, ingat untuk selalu bernapas sejenak dan <i>take one step at a time</i>. <i>You are doing just fine, so keep going, stay hopeful, and wish you a truly beautiful life journey filled with peace, warmth, and gentle days ahead.</i>
+      </p>
+
+      <p>
+        Kalau belakangan ini atau sewaktu-waktu kamu lagi merasa sedih, capek, atau berat, wajar banget kok... <i>it is completely okay to not be okay sometimes</i>. Kamu tidak harus selalu terlihat kuat setiap saat. Kalau butuh waktu untuk sendiri atau luapkan isi hati, <i>take all the time you need</i>. Ingat ya, kamu tidak pernah harus menanggung semuanya sendirian. <i>If you ever need someone to talk to or just a safe space to vent, I am always here for you</i>, tapi kalau belum siap cerita pun tidak apa-apa sama sekali. <i>Please don't be too hard on yourself</i>. Percayalah kalau masa-masa sulit ini sifatnya sementara dan <i>brighter days are definitely coming for you</i>. Tetap peluk diri sendiri, <i>take a deep breath</i>, dan semoga harimu perlahan terasa lebih ringan, tenang, dan hangat kembali ya. <i>Sending you lots of warm thoughts and gentle hugs.</i>
+      </p>
+
+      <p>
+        Dan kalau kamu lagi merasa senang, bahagia, atau sedang merayakan pencapaian sekecil apa pun, <i>I am honestly so, so happy for you</i>. Semoga rasa bahagia, ketenangan, dan kehangatan itu bisa bertahan lama di dalam hatimu. <i>Enjoy every single moment of your joy</i>, karena kamu memang sangat layak (<i>you truly deserve</i>) untuk mendapatkan semua kebaikan dan hal-hal indah dalam hidup ini. Semoga energi positif dan senyuman yang kamu rasakan hari ini bisa terus membawa keberkahan, serta semoga akan ada jauh lebih banyak lagi momen-momen menyenangkan yang datang menghampiri kamu ke depannya. <i>May your days always be filled with endless laughter, warmth, and bright moments!</i>
+      </p>
+
+      <p>
+        Kalau sewaktu-waktu kamu lagi berhadapan dengan masalah atau situasi yang rumit, semoga kamu selalu diberikan ketenangan pikiran, kelapangan dada, dan petunjuk untuk menemukan jalan keluar satu per satu ya. Ingat, kamu tidak harus menyelesaikan semuanya dalam satu waktu sekaligus—<i>take it step by step</i>. Kalau butuh teman diskusi untuk cari solusi atau sekadar butuh <i>support system</i> untuk berbagi beban, <i>I am always here for you</i>. <i>No storm lasts forever</i>, dan percayalah di balik setiap ujian, selalu ada pelajaran berharga yang akan membuatmu tumbuh jadi pribadi yang makin tangguh. <i>Take a deep breath and trust that you are strong enough to navigate through this. Sending you my sincere prayers, warm encouragement, and you've got this!</i>
+      </p>
+
+      <p>
+        Semoga kamu dan teman-teman kamu selalu saling menjaga, saling mendukung, dan dikelilingi oleh hubungan pertemanan yang sehat serta tulus ya. Senang rasanya melihat kamu tumbuh dan berproses bersama orang-orang baik di sekelilingmu. Semoga pertemanan kalian selalu dipenuhi rasa saling pengertian, kebaikan, kehangatan, dan hal-hal positif yang saling menguatkan—baik di saat suka maupun duka. <i>I hope you and your friends continue to be a wonderful support system for each other, staying close through every season of life, and may your friendship bring you endless joy, comfort, and beautiful memories together.</i>
+      </p>
+
+      <p>
+        Semoga kamu dan keluarga tercinta selalu dilimpahi kesehatan, kebahagiaan, dan kedamaian ya. Semoga rumah serta hubungan kalian senantiasa menjadi tempat terbaik untuk pulang, saling menguatkan, dan menjadi penyemangat utama dalam setiap langkah perjalananmu. Semoga kamu dan keluarga selalu diberikan kelancaran rezeki, keharmonisan, serta dilindungi dalam setiap kebersamaan. Di saat suka maupun duka, semoga kalian bisa terus saling menjaga, mendukung, dan menjadi kebanggaan satu sama lain. <i>May your home always be filled with love, laughter, warmth, and endless blessings, and wish you and your beloved family a truly peaceful, healthy, and wonderfully blessed life together.</i>
+      </p>
+
+      <p>
+        Semoga kamu dan pasangan kamu selalu dilimpahi kebahagiaan, kedamaian, dan kehangatan ya. Semoga hubungan kalian berdua bisa terus tumbuh dengan sehat, saling menguatkan, serta dipenuhi rasa saling percaya, pengertian, dan rasa syukur di setiap harinya. Melihat kalian berdua saling melengkapi rasanya membawa kehangatan tersendiri. Semoga setiap langkah serta rencana yang kalian susun bersama selalu diberi kelancaran, dan semoga rasa sayang serta tawa di antara kalian tidak pernah memudar. <i>May you both continue to grow together with love, patience, and mutual respect, and wish you a peaceful, beautiful, and long-lasting relationship filled with endless joy and blessings through every chapter of life.</i>
+      </p>
+
+      <hr style="border-color: #38bdf8; margin: 25px 0;">
+
+      <!-- INTERAKSI TIUP LILIN -->
+      <h3>🎂 Make a Wish & Tiup Lilinnya 🕯️</h3>
+      <p style="text-align: center; font-size: 0.95rem; color: #cbd5e1;">Klik/sentuh api lilin atau tombol di bawah untuk meniupnya!</p>
+
+      <div class="cake-container">
+        <div class="candle">
+          <div class="flame" id="flame"></div>
+          <div class="smoke" id="smoke"></div>
+        </div>
+        <div class="cake-topping"></div>
+        <div class="cake-base"></div>
+      </div>
+
+      <button id="btn-blow" class="btn-pixel">💨 Meniup Lilin</button>
+
+      <div id="wish-message" class="hidden" style="margin-top: 15px; color: #facc15; font-weight: bold; font-size: 1.1rem; text-align: center; animation: fadeIn 1s;">
+        ✨ Semoga semua doa dan harapan baik Ali terwujud sepenuhnya! Amen ✨
+      </div>
+    </div>
+
+  </div>
+
+  <!-- JAVASCRIPT LENGKAP -->
+  <script>
+    /* ----------------------------------------------------
+       1. CANVAS BACKGROUND: BINTANG JATUH & UBUR-UBUR
+       ---------------------------------------------------- */
+    const canvas = document.getElementById('canvas-bg');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const stars = Array.from({ length: 60 }, () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      size: Math.random() * 2,
+      alpha: Math.random(),
+      speed: Math.random() * 0.02 + 0.005
+    }));
+
+    let shootingStars = [];
+    function createShootingStar(x, y) {
+      shootingStars.push({
+        x: x || Math.random() * window.innerWidth,
+        y: y || Math.random() * (window.innerHeight / 2),
+        length: Math.random() * 80 + 40,
+        speed: Math.random() * 8 + 5,
+        angle: Math.PI / 4,
+        alpha: 1
+      });
+    }
+
+    const jellyfishList = Array.from({ length: 4 }, () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight + window.innerHeight,
+      radius: Math.random() * 12 + 12,
+      speed: Math.random() * 0.6 + 0.3,
+      color: `hsl(${Math.random() * 60 + 180}, 80%, 65%)`,
+      pulse: 0
+    }));
+
+    function drawScene() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Bintang Kelap-Kelip
+      stars.forEach(star => {
+        star.alpha += star.speed;
+        if (star.alpha > 1 || star.alpha < 0) star.speed = -star.speed;
+        ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(star.alpha)})`;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Bintang Jatuh
+      shootingStars.forEach((s, index) => {
+        s.x += Math.cos(s.angle) * s.speed;
+        s.y += Math.sin(s.angle) * s.speed;
+        s.alpha -= 0.015;
+
+        ctx.strokeStyle = `rgba(56, 189, 248, ${s.alpha})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(s.x, s.y);
+        ctx.lineTo(s.x - Math.cos(s.angle) * s.length, s.y - Math.sin(s.angle) * s.length);
+        ctx.stroke();
+
+        if (s.alpha <= 0) shootingStars.splice(index, 1);
+      });
+
+      // Ubur-Ubur Glowing
+      jellyfishList.forEach(j => {
+        j.y -= j.speed;
+        j.pulse += 0.05;
+        if (j.y < -50) j.y = canvas.height + 50;
+
+        ctx.save();
+        ctx.fillStyle = j.color;
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = j.color;
+
+        ctx.beginPath();
+        ctx.arc(j.x, j.y, j.radius + Math.sin(j.pulse) * 2, Math.PI, 0, false);
+        ctx.fill();
+
+        ctx.strokeStyle = j.color;
+        ctx.lineWidth = 1.5;
+        for (let i = -j.radius + 4; i <= j.radius - 4; i += 6) {
+          ctx.beginPath();
+          ctx.moveTo(j.x + i, j.y);
+          ctx.lineTo(j.x + i + Math.sin(j.pulse) * 4, j.y + 20);
+          ctx.stroke();
+        }
+        ctx.restore();
+      });
+
+      requestAnimationFrame(drawScene);
+    }
+    drawScene();
+    setInterval(() => createShootingStar(), 4000);
+
+
+    /* ----------------------------------------------------
+       2. SCREEN 1: INTRO (SPAWN BUNGA DENGAN SENTUHAN)
+       ---------------------------------------------------- */
+    const screenIntro = document.getElementById('screen-intro');
+    const btnToGame = document.getElementById('btn-to-game');
+    let flowerCount = 0;
+    const flowerIcons = ['🌹', '🌷', '🌸', '🌺', '🌻', '🌼'];
+
+    screenIntro.addEventListener('click', (e) => {
+      // Bintang Jatuh saat diklik
+      createShootingStar(e.clientX, e.clientY);
+
+      if (e.target === btnToGame) return;
+
+      flowerCount++;
+      const flower = document.createElement('div');
+      flower.innerText = flowerIcons[Math.floor(Math.random() * flowerIcons.length)];
+      flower.style.position = 'fixed';
+      flower.style.left = `${e.clientX - 20}px`;
+      flower.style.top = `${e.clientY - 20}px`;
+      flower.style.fontSize = '2.2rem';
+      flower.style.pointerEvents = 'none';
+      flower.style.zIndex = '999';
+      flower.style.animation = 'fadeIn 0.4s ease-out';
+      document.body.appendChild(flower);
+
+      if (flowerCount >= 4) {
+        btnToGame.classList.remove('hidden');
+      }
+    });
+
+    btnToGame.addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('screen-intro').classList.add('hidden');
+      document.getElementById('screen-game').classList.remove('hidden');
+    });
+
+
+    /* ----------------------------------------------------
+       3. SCREEN 2: GAME MEMORY PUZZLE
+       ---------------------------------------------------- */
+    const memoryGrid = document.getElementById('memory-grid');
+    const btnToMain = document.getElementById('btn-to-main');
+    const cardIcons = ['🪼', '🐠', '🐱', '🐰', '🪼', '🐠', '🐱', '🐰'];
+    let flippedCards = [];
+    let matchedPairs = 0;
+
+    const shuffled = cardIcons.sort(() => Math.random() - 0.5);
+
+    shuffled.forEach((icon, index) => {
+      const card = document.createElement('div');
+      card.classList.add('memory-card');
+      card.dataset.icon = icon;
+      card.innerText = '❓';
+
+      card.addEventListener('click', () => {
+        if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
+          card.classList.add('flipped');
+          card.innerText = icon;
+          flippedCards.push(card);
+
+          if (flippedCards.length === 2) {
+            checkMatch();
+          }
+        }
+      });
+
+      memoryGrid.appendChild(card);
+    });
+
+    function checkMatch() {
+      const [card1, card2] = flippedCards;
+      if (card1.dataset.icon === card2.dataset.icon) {
+        matchedPairs++;
+        flippedCards = [];
+        if (matchedPairs === 4) {
+          btnToMain.classList.remove('hidden');
+        }
+      } else {
+        setTimeout(() => {
+          card1.classList.remove('flipped');
+          card2.classList.remove('flipped');
+          card1.innerText = '❓';
+          card2.innerText = '❓';
+          flippedCards = [];
+        }, 700);
+      }
+    }
+
+    btnToMain.addEventListener('click', () => {
+      document.getElementById('screen-game').classList.add('hidden');
+      document.getElementById('screen-main').classList.remove('hidden');
+    });
+
+
+    /* ----------------------------------------------------
+       4. SCREEN 3: TIUP LILIN INTERAKSI
+       ---------------------------------------------------- */
+    const flame = document.getElementById('flame');
+    const smoke = document.getElementById('smoke');
+    const wishMessage = document.getElementById('wish-message');
+    const btnBlow = document.getElementById('btn-blow');
+
+    function extinguishCandle() {
+      flame.classList.add('extinguished');
+      smoke.style.display = 'block';
+      wishMessage.classList.remove('hidden');
+      btnBlow.style.display = 'none';
+    }
+
+    flame.addEventListener('click', extinguishCandle);
+    btnBlow.addEventListener('click', extinguishCandle);
+  </script>
+</body>
+</html>
